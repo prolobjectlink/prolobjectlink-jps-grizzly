@@ -1,23 +1,33 @@
 /*-
  * #%L
- * prolobjectlink-jds-glassfish
+ * prolobjectlink-jps-glassfish
  * %%
  * Copyright (C) 2019 Prolobjectlink Project
  * %%
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 2 of the
+ * License, or (at your option) any later version.
  * 
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-2.0.html>.
  * #L%
  */
 package org.prolobjectlink.web.platform;
+
+import java.io.File;
+
+import org.glassfish.embeddable.Deployer;
+import org.glassfish.embeddable.GlassFish;
+import org.glassfish.embeddable.GlassFishException;
+import org.glassfish.embeddable.GlassFishProperties;
+import org.glassfish.embeddable.GlassFishRuntime;
 
 /**
  * 
@@ -26,13 +36,22 @@ package org.prolobjectlink.web.platform;
  */
 public abstract class AbstractGlassfishServer extends AbstractWebServer implements JettyWebServer {
 
+	private GlassFish server;
+	private Deployer deployer;
+	private final GlassFishProperties properties;
+
 	public AbstractGlassfishServer(int serverPort) {
 		super(serverPort);
-	}
-
-	public final String getLicense() {
-		// TODO Auto-generated method stub
-		return null;
+		properties = new GlassFishProperties();
+		properties.setProperty("http-listener", "" + serverPort + "");
+		try {
+			server = GlassFishRuntime.bootstrap().newGlassFish(properties);
+			deployer = server.getDeployer();
+			deployer.deploy(new File("warFileGoHere"));
+		} catch (GlassFishException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public final String getVersion() {
@@ -45,11 +64,23 @@ public abstract class AbstractGlassfishServer extends AbstractWebServer implemen
 	}
 
 	public final void start() {
-		// TODO Auto-generated method stub
+		try {
+			server.start();
+		} catch (GlassFishException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public final void stop() {
-		// TODO Auto-generated method stub
+		try {
+			deployer.undeploy("warFileGoHere");
+			server.stop();
+			server.dispose();
+		} catch (GlassFishException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

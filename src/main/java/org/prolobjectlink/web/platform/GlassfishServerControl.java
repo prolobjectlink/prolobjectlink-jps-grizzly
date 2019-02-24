@@ -28,12 +28,11 @@ import org.prolobjectlink.db.DatabaseServer;
 import org.prolobjectlink.db.platform.linux.LinuxDatabaseServer;
 import org.prolobjectlink.db.platform.macosx.MacosxDatabaseServer;
 import org.prolobjectlink.db.platform.win32.Win32DatabaseServer;
-import org.prolobjectlink.web.platform.linux.LinuxServerControl;
 import org.prolobjectlink.web.platform.linux.glassfish.LinuxGlassfishWebServer;
 import org.prolobjectlink.web.platform.macosx.glassfish.MacosxGlassfishWebServer;
 import org.prolobjectlink.web.platform.win32.glassfish.Win32GlassfishWebServer;
 
-public class GlassfishServerControl extends LinuxServerControl implements WebServerControl {
+public class GlassfishServerControl extends AbstractWebControl implements WebServerControl {
 
 	public GlassfishServerControl(WebServer webServer, DatabaseServer databaseServer) {
 		super(webServer, databaseServer);

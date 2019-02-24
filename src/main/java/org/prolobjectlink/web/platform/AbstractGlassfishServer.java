@@ -34,7 +34,7 @@ import org.glassfish.embeddable.GlassFishRuntime;
  * @author Jose Zalacain
  * @since 1.0
  */
-public abstract class AbstractGlassfishServer extends AbstractWebServer implements JettyWebServer {
+public abstract class AbstractGlassfishServer extends AbstractWebServer implements GlassfishWebServer {
 
 	private GlassFish server;
 	private Deployer deployer;
@@ -46,8 +46,6 @@ public abstract class AbstractGlassfishServer extends AbstractWebServer implemen
 		properties.setProperty("http-listener", "" + serverPort + "");
 		try {
 			server = GlassFishRuntime.bootstrap().newGlassFish(properties);
-			deployer = server.getDeployer();
-			deployer.deploy(new File("warFileGoHere"));
 		} catch (GlassFishException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,6 +64,8 @@ public abstract class AbstractGlassfishServer extends AbstractWebServer implemen
 	public final void start() {
 		try {
 			server.start();
+			deployer = server.getDeployer();
+			deployer.deploy(new File("warFileGoHere"));
 		} catch (GlassFishException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

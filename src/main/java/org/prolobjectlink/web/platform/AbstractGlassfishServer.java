@@ -21,13 +21,27 @@
  */
 package org.prolobjectlink.web.platform;
 
-import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.URI;
+import java.util.EnumSet;
 
-import org.glassfish.embeddable.Deployer;
-import org.glassfish.embeddable.GlassFish;
-import org.glassfish.embeddable.GlassFishException;
-import org.glassfish.embeddable.GlassFishProperties;
-import org.glassfish.embeddable.GlassFishRuntime;
+import javax.servlet.DispatcherType;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
+
+import org.glassfish.grizzly.filterchain.BaseFilter;
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.ServerConfiguration;
+import org.glassfish.grizzly.servlet.WebappContext;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.prolobjectlink.web.servlet.HomeServlet;
 
 /**
  * 
@@ -36,51 +50,52 @@ import org.glassfish.embeddable.GlassFishRuntime;
  */
 public abstract class AbstractGlassfishServer extends AbstractWebServer implements GlassfishWebServer {
 
-	private GlassFish server;
-	private Deployer deployer;
-	private final GlassFishProperties properties;
+	WebappContext context;
+	HttpServer httpServer;
+	static URI BASE_URI = URI.create("http://localhost:8080/");
 
 	public AbstractGlassfishServer(int serverPort) {
 		super(serverPort);
-		properties = new GlassFishProperties();
-		properties.setProperty("http-listener", "" + serverPort + "");
-		try {
-			server = GlassFishRuntime.bootstrap().newGlassFish(properties);
-		} catch (GlassFishException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		context = new WebappContext("Test", BASE_URI.getRawPath());
+//		context.addListener(new WidowAnalyzeServletContextListener());
+		FilterRegistration registration = context.addFilter("BaseFilter", new Filter() {
+
+			public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+					throws IOException, ServletException {
+				PrintWriter out = response.getWriter();
+				out.print("<h1>Hello World</h1>");
+			}
+		});
+		registration.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.INCLUDE,
+				DispatcherType.FORWARD, DispatcherType.ERROR), true, "/*");
+
+		HomeServlet home = new HomeServlet();
+		ServletRegistration servletRegistration = context.addServlet(home.getClass().getName(), home);
+		servletRegistration.addMapping("/*");
+		httpServer = GrizzlyHttpServerFactory.createHttpServer(BASE_URI);
+		ServerConfiguration config = httpServer.getServerConfiguration();
+		context.deploy(httpServer);
 	}
 
 	public final String getVersion() {
-		// TODO Auto-generated method stub
-		return null;
+		return httpServer.getServerConfiguration().getHttpServerVersion();
 	}
 
 	public final String getName() {
-		return GLASSFISH;
+		return httpServer.getServerConfiguration().getHttpServerName();
 	}
 
 	public final void start() {
 		try {
-			server.start();
-			deployer = server.getDeployer();
-			deployer.deploy(new File("warFileGoHere"));
-		} catch (GlassFishException e) {
+			httpServer.start();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	public final void stop() {
-		try {
-			deployer.undeploy("warFileGoHere");
-			server.stop();
-			server.dispose();
-		} catch (GlassFishException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		httpServer.shutdown();
 	}
 
 }

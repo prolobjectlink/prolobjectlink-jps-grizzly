@@ -26,6 +26,6 @@ package org.prolobjectlink.web.platform;
  * @author Jose Zalacain
  * @since 1.0
  */
-public interface GlassfishWebServer extends WebServer {
+public interface GrizzlyWebServer extends WebServer {
 
 }

@@ -19,14 +19,14 @@
  * <http://www.gnu.org/licenses/gpl-2.0.html>.
  * #L%
  */
-package org.prolobjectlink.web.platform.linux.glassfish;
+package org.prolobjectlink.web.platform.macosx.grizzly;
 
-import org.prolobjectlink.web.platform.AbstractGlassfishServer;
-import org.prolobjectlink.web.platform.GlassfishWebServer;
+import org.prolobjectlink.web.platform.AbstractGrizzlyServer;
+import org.prolobjectlink.web.platform.GrizzlyWebServer;
 
-public class LinuxGlassfishWebServer extends AbstractGlassfishServer implements GlassfishWebServer {
+public class MacosxGrizzlyWebServer extends AbstractGrizzlyServer implements GrizzlyWebServer {
 
-	public LinuxGlassfishWebServer(int serverPort) {
+	public MacosxGrizzlyWebServer(int serverPort) {
 		super(serverPort);
 	}
 

@@ -28,13 +28,13 @@ import org.prolobjectlink.db.DatabaseServer;
 import org.prolobjectlink.db.platform.linux.LinuxDatabaseServer;
 import org.prolobjectlink.db.platform.macosx.MacosxDatabaseServer;
 import org.prolobjectlink.db.platform.win32.Win32DatabaseServer;
-import org.prolobjectlink.web.platform.linux.glassfish.LinuxGlassfishWebServer;
-import org.prolobjectlink.web.platform.macosx.glassfish.MacosxGlassfishWebServer;
-import org.prolobjectlink.web.platform.win32.glassfish.Win32GlassfishWebServer;
+import org.prolobjectlink.web.platform.linux.grizzly.LinuxGrizzlyWebServer;
+import org.prolobjectlink.web.platform.macosx.grizzly.MacosxGrizzlyWebServer;
+import org.prolobjectlink.web.platform.win32.grizzly.Win32GrizzlyWebServer;
 
-public class GlassfishServerControl extends AbstractWebControl implements WebServerControl {
+public class GrizzlyServerControl extends AbstractWebControl implements WebServerControl {
 
-	public GlassfishServerControl(WebServer webServer, DatabaseServer databaseServer) {
+	public GrizzlyServerControl(WebServer webServer, DatabaseServer databaseServer) {
 		super(webServer, databaseServer);
 	}
 
@@ -44,23 +44,23 @@ public class GlassfishServerControl extends AbstractWebControl implements WebSer
 		int port = 8085;
 
 		DatabaseServer database = null;
-		GlassfishWebServer server = null;
+		GrizzlyWebServer server = null;
 
 		if (WebPlatformUtil.runOnWindows()) {
 			database = new Win32DatabaseServer();
-			server = new Win32GlassfishWebServer(port);
+			server = new Win32GrizzlyWebServer(port);
 		} else if (WebPlatformUtil.runOnOsX()) {
 			database = new MacosxDatabaseServer();
-			server = new MacosxGlassfishWebServer(port);
+			server = new MacosxGrizzlyWebServer(port);
 		} else if (WebPlatformUtil.runOnLinux()) {
 			database = new LinuxDatabaseServer();
-			server = new LinuxGlassfishWebServer(port);
+			server = new LinuxGrizzlyWebServer(port);
 		} else {
-			Logger.getLogger(GlassfishServerControl.class.getName()).log(Level.SEVERE, null, "Not supported platfor");
+			Logger.getLogger(GrizzlyServerControl.class.getName()).log(Level.SEVERE, null, "Not supported platfor");
 			System.exit(1);
 		}
 
-		new GlassfishServerControl(server, database).run(args);
+		new GrizzlyServerControl(server, database).run(args);
 	}
 
 }

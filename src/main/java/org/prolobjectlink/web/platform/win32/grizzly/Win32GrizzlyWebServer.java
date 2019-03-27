@@ -19,14 +19,14 @@
  * <http://www.gnu.org/licenses/gpl-2.0.html>.
  * #L%
  */
-package org.prolobjectlink.web.platform.win32.glassfish;
+package org.prolobjectlink.web.platform.win32.grizzly;
 
-import org.prolobjectlink.web.platform.AbstractGlassfishServer;
-import org.prolobjectlink.web.platform.GlassfishWebServer;
+import org.prolobjectlink.web.platform.AbstractGrizzlyServer;
+import org.prolobjectlink.web.platform.GrizzlyWebServer;
 
-public class Win32GlassfishWebServer extends AbstractGlassfishServer implements GlassfishWebServer {
+public class Win32GrizzlyWebServer extends AbstractGrizzlyServer implements GrizzlyWebServer {
 
-	public Win32GlassfishWebServer(int serverPort) {
+	public Win32GrizzlyWebServer(int serverPort) {
 		super(serverPort);
 	}
 

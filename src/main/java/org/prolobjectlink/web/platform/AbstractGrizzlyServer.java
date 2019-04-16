@@ -22,11 +22,14 @@
 package org.prolobjectlink.web.platform;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 
 import javax.servlet.ServletRegistration;
 
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.servlet.WebappContext;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.prolobjectlink.web.servlet.HomeServlet;
@@ -38,17 +41,31 @@ import org.prolobjectlink.web.servlet.HomeServlet;
  */
 public abstract class AbstractGrizzlyServer extends AbstractWebServer implements GrizzlyWebServer {
 
-	private final HttpServer server;
+	private HttpServer server;
 
 	public AbstractGrizzlyServer(int serverPort) {
 		super(serverPort);
-		URI baseUri = URI.create("http://localhost:" + serverPort + "/");
-		WebappContext context = new WebappContext("GrizzlyContext", baseUri.getRawPath());
-		server = GrizzlyHttpServerFactory.createHttpServer(baseUri);
-		HomeServlet home = new HomeServlet();
-		ServletRegistration servletRegistration = context.addServlet(home.getClass().getName(), home);
-		servletRegistration.addMapping("/*");
-		context.deploy(server);
+		try {
+			InetAddress localHost = InetAddress.getLocalHost();
+			String localHostAddr = localHost.getHostAddress();
+			NetworkListener localHostListener = new NetworkListener("localhost", localHostAddr, serverPort);
+			InetAddress loopback = InetAddress.getLoopbackAddress();
+			String loopbackAddr = loopback.getHostAddress();
+			NetworkListener loopbackListener = new NetworkListener("loopback", loopbackAddr, serverPort);
+			URI baseUri = URI.create("http://" + localHostAddr + ":" + serverPort + "/");
+			WebappContext context = new WebappContext("GrizzlyContext", baseUri.getRawPath());
+			server = GrizzlyHttpServerFactory.createHttpServer(baseUri);
+			server.addListener(localHostListener);
+			server.addListener(loopbackListener);
+			HomeServlet home = new HomeServlet();
+			ServletRegistration servletRegistration = context.addServlet(home.getClass().getName(), home);
+			servletRegistration.addMapping("/*");
+			context.deploy(server);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 
 	public final String getVersion() {

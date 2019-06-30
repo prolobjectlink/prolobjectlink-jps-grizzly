@@ -39,7 +39,6 @@ public class GrizzlyServerControl extends AbstractWebControl implements WebServe
 	}
 
 	public static void main(String[] args) {
-		// TODO Port from args
 
 		int port = 8085;
 
@@ -56,7 +55,7 @@ public class GrizzlyServerControl extends AbstractWebControl implements WebServe
 			database = new LinuxDatabaseServer();
 			server = new LinuxGrizzlyWebServer(port);
 		} else {
-			Logger.getLogger(GrizzlyServerControl.class.getName()).log(Level.SEVERE, null, "Not supported platfor");
+			Logger.getLogger(GrizzlyServerControl.class.getName()).log(Level.SEVERE, null, "Not supported platform");
 			System.exit(1);
 		}
 

@@ -25,14 +25,20 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.util.List;
 
-import javax.servlet.ServletRegistration;
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.servlet.WebappContext;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
-import org.prolobjectlink.web.servlet.HomeServlet;
+import org.prolobjectlink.web.application.ControllerGenerator;
+import org.prolobjectlink.web.application.GrizzlyControllerGenerator;
+import org.prolobjectlink.web.application.ServletUrlMapping;
+import org.prolobjectlink.web.servlet.DatabaseServlet;
+import org.prolobjectlink.web.servlet.WelcomeServlet;
 
 /**
  * 
@@ -52,16 +58,30 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 			InetAddress loopback = InetAddress.getLoopbackAddress();
 			String loopbackAddr = loopback.getHostAddress();
 			NetworkListener loopbackListener = new NetworkListener("loopback", loopbackAddr, serverPort);
-			URI baseUri = URI.create("http://" + localHostAddr + ":" + serverPort + "/");
-			WebappContext context = new WebappContext("GrizzlyContext", baseUri.getRawPath());
+			URI baseUri = URI.create("http://" + localHostAddr + ":" + serverPort);
+			WebappContext context = new WebappContext("GrizzlyContext");
 			server = GrizzlyHttpServerFactory.createHttpServer(baseUri);
 			server.addListener(localHostListener);
 			server.addListener(loopbackListener);
-			HomeServlet home = new HomeServlet();
-			ServletRegistration servletRegistration = context.addServlet(home.getClass().getName(), home);
-			servletRegistration.addMapping("/*");
+			WelcomeServlet home = new WelcomeServlet();
+			context.addServlet(home.getClass().getName(), home).addMapping("/welcome");
+			DatabaseServlet db = new DatabaseServlet();
+			context.addServlet(db.getClass().getName(), db).addMapping("/databases");
+
+			// application controllers
+			ControllerGenerator controllerGenerator = new GrizzlyControllerGenerator();
+			List<ServletUrlMapping> mappings = controllerGenerator.getMappings();
+			for (ServletUrlMapping servletUrlMapping : mappings) {
+				Servlet servlet = context.createServlet(servletUrlMapping.getServlet().getClass());
+				context.addServlet(servletUrlMapping.getServlet().getClass().getName(), servlet)
+						.addMapping(servletUrlMapping.getMappingUrl());
+			}
+
 			context.deploy(server);
 		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ServletException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

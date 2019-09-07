@@ -1,6 +1,6 @@
 /*-
  * #%L
- * prolobjectlink-jps-glassfish
+ * prolobjectlink-jps-grizzly
  * %%
  * Copyright (C) 2019 Prolobjectlink Project
  * %%
@@ -25,8 +25,11 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
+import java.sql.SQLException;
 import java.util.List;
 
+import javax.persistence.spi.PersistenceProvider;
+import javax.persistence.spi.PersistenceUnitInfo;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
@@ -34,10 +37,19 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.server.NetworkListener;
 import org.glassfish.grizzly.servlet.WebappContext;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.prolobjectlink.db.DatabaseDriver;
+import org.prolobjectlink.db.DatabaseDriverFactory;
+import org.prolobjectlink.db.jpa.spi.JPAPersistenceUnitInfo;
+import org.prolobjectlink.db.util.JavaReflect;
+import org.prolobjectlink.logging.LoggerConstants;
+import org.prolobjectlink.logging.LoggerUtils;
 import org.prolobjectlink.web.application.ControllerGenerator;
 import org.prolobjectlink.web.application.GrizzlyControllerGenerator;
+import org.prolobjectlink.web.application.GrizzlyModelGenerator;
+import org.prolobjectlink.web.application.ModelGenerator;
 import org.prolobjectlink.web.application.ServletUrlMapping;
 import org.prolobjectlink.web.servlet.DatabaseServlet;
+import org.prolobjectlink.web.servlet.ManagerServlet;
 import org.prolobjectlink.web.servlet.WelcomeServlet;
 
 /**
@@ -67,8 +79,28 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 			context.addServlet(home.getClass().getName(), home).addMapping("/welcome");
 			DatabaseServlet db = new DatabaseServlet();
 			context.addServlet(db.getClass().getName(), db).addMapping("/databases");
+			ManagerServlet man = new ManagerServlet();
+			context.addServlet(man.getClass().getName(), man).addMapping("/manager");
 
-			// application controllers
+			// applications models
+			ModelGenerator modelGenerator = new GrizzlyModelGenerator();
+			List<PersistenceUnitInfo> units = modelGenerator.getPersistenceUnits();
+			for (PersistenceUnitInfo unit : units) {
+				try {
+					DatabaseDriver databaseDriver = DatabaseDriverFactory.createDriver(unit);
+					databaseDriver.createDatabase();
+				} catch (SQLException e) {
+					LoggerUtils.error(getClass(), LoggerConstants.SQL_ERROR, e);
+				}
+				JPAPersistenceUnitInfo jpaUnit = (JPAPersistenceUnitInfo) unit;
+				String name = jpaUnit.getPersistenceProviderClassName();
+				Class<?> cls = JavaReflect.classForName(name);
+				Object object = JavaReflect.newInstance(cls);
+				PersistenceProvider provider = (PersistenceProvider) object;
+				provider.generateSchema(unit, unit.getProperties());
+			}
+
+			// applications controllers
 			ControllerGenerator controllerGenerator = new GrizzlyControllerGenerator();
 			List<ServletUrlMapping> mappings = controllerGenerator.getMappings();
 			for (ServletUrlMapping servletUrlMapping : mappings) {
@@ -79,11 +111,9 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 
 			context.deploy(server);
 		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LoggerUtils.error(getClass(), LoggerConstants.UNKNOWN_HOST, e);
 		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LoggerUtils.error(getClass(), LoggerConstants.SERVLET_ERROR, e);
 		}
 
 	}
@@ -102,8 +132,7 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 				server.start();
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LoggerUtils.error(getClass(), LoggerConstants.IO, e);
 		}
 	}
 

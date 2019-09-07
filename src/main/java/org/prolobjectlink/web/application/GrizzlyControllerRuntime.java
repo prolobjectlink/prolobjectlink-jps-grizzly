@@ -1,6 +1,6 @@
 /*-
  * #%L
- * prolobjectlink-jps-glassfish
+ * prolobjectlink-jps-grizzly
  * %%
  * Copyright (C) 2012 - 2019 Prolobjectlink Project
  * %%

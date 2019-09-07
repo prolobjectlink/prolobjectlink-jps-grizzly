@@ -21,20 +21,6 @@
  */
 package org.prolobjectlink.web.application;
 
-import org.prolobjectlink.prolog.PrologProvider;
-
-public final class GrizzlyControllerGenerator extends AbstractControllerGenerator implements ControllerGenerator {
-
-	public GrizzlyControllerGenerator() {
-		super();
-	}
-
-	public GrizzlyControllerGenerator(PrologProvider provider) {
-		super(provider);
-	}
-
-	public Class<?> getControllerRuntimeClass() {
-		return GrizzlyControllerRuntime.class;
-	}
+public final class GrizzlyModelGenerator extends AbstractModelGenerator implements ModelGenerator {
 
 }

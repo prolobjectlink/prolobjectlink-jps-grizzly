@@ -49,6 +49,7 @@ import org.prolobjectlink.web.application.GrizzlyModelGenerator;
 import org.prolobjectlink.web.application.ModelGenerator;
 import org.prolobjectlink.web.application.ServletUrlMapping;
 import org.prolobjectlink.web.servlet.DatabaseServlet;
+import org.prolobjectlink.web.servlet.DocumentsServlet;
 import org.prolobjectlink.web.servlet.ManagerServlet;
 import org.prolobjectlink.web.servlet.WelcomeServlet;
 
@@ -81,6 +82,8 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 			context.addServlet(db.getClass().getName(), db).addMapping("/databases");
 			ManagerServlet man = new ManagerServlet();
 			context.addServlet(man.getClass().getName(), man).addMapping("/manager");
+			DocumentsServlet doc = new DocumentsServlet();
+			context.addServlet(doc.getClass().getName(), doc).addMapping("/doc");
 
 			// applications models
 			try {
@@ -99,7 +102,7 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 					}
 				}
 			} catch (SQLException e) {
-				LoggerUtils.error(getClass(), LoggerConstants.SQL_ERROR, e);
+				// do nothing
 			}
 
 			// applications controllers

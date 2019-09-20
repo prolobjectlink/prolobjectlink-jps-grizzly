@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<rss version="0.91">
+  <channel>
+    <title>prolobjectlink-jps-grizzly - Checkstyle report</title>
+    <link>https://github.com/prolobjectlink/prolobjectlink-jps-grizzly</link>
+    <description>prolobjectlink-jps-grizzly - Checkstyle report</description>
+    <language>en-us</language>
+    <copyright>&#169;2012 - 2019 Prolobjectlink Project</copyright>
+    <item>
+      <title>File: 9,
+             Errors: 205,
+             Warnings: 0,
+             Infos: 0
+      </title>
+            <link>https://github.com/prolobjectlink/prolobjectlink-jps-grizzly/checkstyle.html</link>
+      <description>
+        <p>Click <a href="https://github.com/prolobjectlink/prolobjectlink-jps-grizzly/checkstyle.html">here</a> for the full Checkstyle report.</p>
+
+        <table summary="Files" boder="1">
+          <thead>
+            <tr>
+              <th>Files</th>
+              <th style="width:30px;"><abbr title="Info">I</abbr></th>
+              <th style="width:30px;"><abbr title="Warning">W</abbr></th>
+              <th style="width:30px;"><abbr title="Error">E</abbr></th>
+            </tr>
+          </thead>
+          <tbody>
+                          <tr>
+                <td>
+                  <a href="https://github.com/prolobjectlink/prolobjectlink-jps-grizzly/checkstyle.html#org.prolobjectlink.web.platform.linux.grizzly.LinuxGrizzlyWebServer.java">org/prolobjectlink/web/platform/linux/grizzly/LinuxGrizzlyWebServer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/prolobjectlink/prolobjectlink-jps-grizzly/checkstyle.html#org.prolobjectlink.web.platform.AbstractGrizzlyServer.java">org/prolobjectlink/web/platform/AbstractGrizzlyServer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  113
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/prolobjectlink/prolobjectlink-jps-grizzly/checkstyle.html#org.prolobjectlink.web.platform.macosx.grizzly.MacosxGrizzlyWebServer.java">org/prolobjectlink/web/platform/macosx/grizzly/MacosxGrizzlyWebServer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/prolobjectlink/prolobjectlink-jps-grizzly/checkstyle.html#org.prolobjectlink.web.application.GrizzlyModelGenerator.java">org/prolobjectlink/web/application/GrizzlyModelGenerator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  4
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/prolobjectlink/prolobjectlink-jps-grizzly/checkstyle.html#org.prolobjectlink.web.platform.GrizzlyWebServer.java">org/prolobjectlink/web/platform/GrizzlyWebServer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  3
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/prolobjectlink/prolobjectlink-jps-grizzly/checkstyle.html#org.prolobjectlink.web.platform.GrizzlyServerControl.java">org/prolobjectlink/web/platform/GrizzlyServerControl.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  11
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/prolobjectlink/prolobjectlink-jps-grizzly/checkstyle.html#org.prolobjectlink.web.application.GrizzlyControllerGenerator.java">org/prolobjectlink/web/application/GrizzlyControllerGenerator.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  18
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/prolobjectlink/prolobjectlink-jps-grizzly/checkstyle.html#org.prolobjectlink.web.platform.win32.grizzly.Win32GrizzlyWebServer.java">org/prolobjectlink/web/platform/win32/grizzly/Win32GrizzlyWebServer.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  10
+                </td>
+              </tr>
+                          <tr>
+                <td>
+                  <a href="https://github.com/prolobjectlink/prolobjectlink-jps-grizzly/checkstyle.html#org.prolobjectlink.web.application.GrizzlyControllerRuntime.java">org/prolobjectlink/web/application/GrizzlyControllerRuntime.java</a>
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  0
+                </td>
+                <td>
+                  26
+                </td>
+              </tr>
+                      </tbody>
+        </table>
+        
+      </description>
+    </item>
+  </channel>
+</rss>
+

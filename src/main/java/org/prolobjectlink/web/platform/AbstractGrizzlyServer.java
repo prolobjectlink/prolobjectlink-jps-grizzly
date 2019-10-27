@@ -48,9 +48,28 @@ import org.prolobjectlink.web.application.GrizzlyControllerGenerator;
 import org.prolobjectlink.web.application.GrizzlyModelGenerator;
 import org.prolobjectlink.web.application.ModelGenerator;
 import org.prolobjectlink.web.application.ServletUrlMapping;
+import org.prolobjectlink.web.servlet.BootstrapCSSMinMapServlet;
+import org.prolobjectlink.web.servlet.BootstrapCSSMinServlet;
+import org.prolobjectlink.web.servlet.BootstrapCSSServlet;
+import org.prolobjectlink.web.servlet.BootstrapJSMinMapServlet;
+import org.prolobjectlink.web.servlet.BootstrapJSMinServlet;
+import org.prolobjectlink.web.servlet.BootstrapJSServlet;
+import org.prolobjectlink.web.servlet.ChartJSMinServlet;
+import org.prolobjectlink.web.servlet.ChartJSServlet;
 import org.prolobjectlink.web.servlet.DatabaseServlet;
 import org.prolobjectlink.web.servlet.DocumentsServlet;
+import org.prolobjectlink.web.servlet.FontawesomeCSSMinServlet;
+import org.prolobjectlink.web.servlet.FontawesomeCSSServlet;
+import org.prolobjectlink.web.servlet.JQueryMinMapServlet;
+import org.prolobjectlink.web.servlet.JQueryMinServlet;
+import org.prolobjectlink.web.servlet.JQueryServlet;
 import org.prolobjectlink.web.servlet.ManagerServlet;
+import org.prolobjectlink.web.servlet.PopperMinServlet;
+import org.prolobjectlink.web.servlet.PopperServlet;
+import org.prolobjectlink.web.servlet.ProlobjectlinkCSSMinServlet;
+import org.prolobjectlink.web.servlet.ProlobjectlinkCSSServlet;
+import org.prolobjectlink.web.servlet.ProlobjectlinkJSMinServlet;
+import org.prolobjectlink.web.servlet.ProlobjectlinkJSServlet;
 import org.prolobjectlink.web.servlet.WelcomeServlet;
 
 /**
@@ -84,6 +103,80 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 			context.addServlet(man.getClass().getName(), man).addMapping("/manager");
 			DocumentsServlet doc = new DocumentsServlet();
 			context.addServlet(doc.getClass().getName(), doc).addMapping("/doc");
+
+			// jquery.js
+			JQueryServlet jquery = new JQueryServlet();
+			context.addServlet(jquery.getClass().getName(), jquery).addMapping("/js/jquery-3.4.1.js");
+			JQueryMinServlet jquerymin = new JQueryMinServlet();
+			context.addServlet(jquerymin.getClass().getName(), jquerymin).addMapping("/js/jquery-3.4.1.min.js");
+			JQueryMinMapServlet jqueryminmap = new JQueryMinMapServlet();
+			context.addServlet(jqueryminmap.getClass().getName(), jqueryminmap)
+					.addMapping("/js/jquery-3.4.1.min.js.map");
+
+			// propper.js
+			PopperServlet proper = new PopperServlet();
+			context.addServlet(proper.getClass().getName(), proper).addMapping("/js/popper.js");
+			PopperMinServlet propermin = new PopperMinServlet();
+			context.addServlet(propermin.getClass().getName(), propermin).addMapping("/js/popper.min.js");
+
+			// chart.js
+			ChartJSServlet chartjs = new ChartJSServlet();
+			context.addServlet(chartjs.getClass().getName(), chartjs).addMapping("/js/chart.js");
+			ChartJSMinServlet chartjsmin = new ChartJSMinServlet();
+			context.addServlet(chartjsmin.getClass().getName(), chartjsmin).addMapping("/js/chart.min.js");
+
+			// bootstrap.js
+			BootstrapJSServlet bootstrapjs = new BootstrapJSServlet();
+			context.addServlet(bootstrapjs.getClass().getName(), bootstrapjs).addMapping("/js/bootstrap.js");
+			BootstrapJSMinServlet bootstrapjsmin = new BootstrapJSMinServlet();
+			context.addServlet(bootstrapjsmin.getClass().getName(), bootstrapjsmin).addMapping("/js/bootstrap.min.js");
+			BootstrapJSMinMapServlet bootstrapjsminmap = new BootstrapJSMinMapServlet();
+			context.addServlet(bootstrapjsminmap.getClass().getName(), bootstrapjsminmap)
+					.addMapping("/js/bootstrap.min.js.map");
+
+			// prolobjectlink.js
+			ProlobjectlinkJSServlet prolobjectlinkjs = new ProlobjectlinkJSServlet();
+			context.addServlet(prolobjectlinkjs.getClass().getName(), prolobjectlinkjs)
+					.addMapping("/js/prolobjectlink.js");
+			ProlobjectlinkJSMinServlet prolobjectlinkjsmin = new ProlobjectlinkJSMinServlet();
+			context.addServlet(prolobjectlinkjsmin.getClass().getName(), prolobjectlinkjsmin)
+					.addMapping("/js/prolobjectlink.min.js");
+
+			// bootstrap.css
+			BootstrapCSSServlet bootstrapcss = new BootstrapCSSServlet();
+			context.addServlet(bootstrapcss.getClass().getName(), bootstrapcss).addMapping("/css/bootstrap.css");
+			BootstrapCSSMinServlet bootstrapcssmin = new BootstrapCSSMinServlet();
+			context.addServlet(bootstrapcssmin.getClass().getName(), bootstrapcssmin)
+					.addMapping("/css/bootstrap.min.css");
+			BootstrapCSSMinMapServlet bootstrapcssminmap = new BootstrapCSSMinMapServlet();
+			context.addServlet(bootstrapcssminmap.getClass().getName(), bootstrapcssminmap)
+					.addMapping("/css/bootstrap.min.css.map");
+
+			// prolobjectlink.css
+			ProlobjectlinkCSSServlet prolobjectlinkcss = new ProlobjectlinkCSSServlet();
+			context.addServlet(prolobjectlinkcss.getClass().getName(), prolobjectlinkcss)
+					.addMapping("/css/prolobjectlink.css");
+			ProlobjectlinkCSSMinServlet prolobjectlinkcssmin = new ProlobjectlinkCSSMinServlet();
+			context.addServlet(prolobjectlinkcssmin.getClass().getName(), prolobjectlinkcssmin)
+					.addMapping("/css/prolobjectlink.min.css");
+
+			// fontawesome.css
+			FontawesomeCSSServlet fontawesomecss = new FontawesomeCSSServlet();
+			context.addServlet(fontawesomecss.getClass().getName(), fontawesomecss)
+					.addMapping("/css/fontawesome-all.css");
+			FontawesomeCSSMinServlet fontawesomecssmin = new FontawesomeCSSMinServlet();
+			context.addServlet(fontawesomecssmin.getClass().getName(), fontawesomecssmin)
+					.addMapping("/css/fontawesome-all.min.css");
+
+			// // server misc
+			// MiscGenerator miscGenerator = new GrizzlyMiscGenerator();
+			// List<ServletUrlMapping> paths = miscGenerator.getMappings();
+			// for (ServletUrlMapping servletUrlMapping : paths) {
+			// Servlet servlet = servletUrlMapping.getServlet();
+			// context.addServlet(servletUrlMapping.getServlet().getClass().getName(),
+			// servlet)
+			// .addMapping(servletUrlMapping.getMappingUrl());
+			// }
 
 			// applications models
 			try {

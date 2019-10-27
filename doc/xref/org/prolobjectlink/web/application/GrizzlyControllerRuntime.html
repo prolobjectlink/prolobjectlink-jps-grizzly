@@ -32,56 +32,50 @@
 <a class="jxr_linenumber" name="22" href="#22">22</a>  <strong class="jxr_keyword">package</strong> org.prolobjectlink.web.application;
 <a class="jxr_linenumber" name="23" href="#23">23</a>  
 <a class="jxr_linenumber" name="24" href="#24">24</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
-<a class="jxr_linenumber" name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> java.util.Arrays;
-<a class="jxr_linenumber" name="26" href="#26">26</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
-<a class="jxr_linenumber" name="27" href="#27">27</a>  
-<a class="jxr_linenumber" name="28" href="#28">28</a>  <strong class="jxr_keyword">import</strong> javax.servlet.ServletOutputStream;
-<a class="jxr_linenumber" name="29" href="#29">29</a>  <strong class="jxr_keyword">import</strong> javax.servlet.http.HttpServletRequest;
-<a class="jxr_linenumber" name="30" href="#30">30</a>  <strong class="jxr_keyword">import</strong> javax.servlet.http.HttpServletResponse;
-<a class="jxr_linenumber" name="31" href="#31">31</a>  
-<a class="jxr_linenumber" name="32" href="#32">32</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../org/prolobjectlink/web/application/GrizzlyControllerRuntime.html">GrizzlyControllerRuntime</a> {
-<a class="jxr_linenumber" name="33" href="#33">33</a>  
-<a class="jxr_linenumber" name="34" href="#34">34</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> run(HttpServletRequest req, HttpServletResponse resp) <strong class="jxr_keyword">throws</strong> IOException {
-<a class="jxr_linenumber" name="35" href="#35">35</a>  
-<a class="jxr_linenumber" name="36" href="#36">36</a>  		String protocol = req.getScheme();
-<a class="jxr_linenumber" name="37" href="#37">37</a>  		String contextHost = req.getHeader(<span class="jxr_string">"host"</span>);
-<a class="jxr_linenumber" name="38" href="#38">38</a>  		Integer contextPort = req.getLocalPort();
-<a class="jxr_linenumber" name="39" href="#39">39</a>  		String contextPath = req.getContextPath();
-<a class="jxr_linenumber" name="40" href="#40">40</a>  		String application = contextPath.substring(1);
-<a class="jxr_linenumber" name="41" href="#41">41</a>  		String servletPath = req.getServletPath();
-<a class="jxr_linenumber" name="42" href="#42">42</a>  		String procedure = servletPath.substring(1);
-<a class="jxr_linenumber" name="43" href="#43">43</a>  
-<a class="jxr_linenumber" name="44" href="#44">44</a>  		System.out.println(req.getMethod());
-<a class="jxr_linenumber" name="45" href="#45">45</a>  		Object[] arguments = <strong class="jxr_keyword">new</strong> Object[0];
-<a class="jxr_linenumber" name="46" href="#46">46</a>  		<strong class="jxr_keyword">if</strong> (req.getMethod().equalsIgnoreCase(<span class="jxr_string">"GET"</span>)) {
-<a class="jxr_linenumber" name="47" href="#47">47</a>  			String pathInfo = req.getPathInfo();
-<a class="jxr_linenumber" name="48" href="#48">48</a>  			System.out.println(pathInfo);
-<a class="jxr_linenumber" name="49" href="#49">49</a>  			<strong class="jxr_keyword">if</strong> (pathInfo != <strong class="jxr_keyword">null</strong> &amp;&amp; !pathInfo.isEmpty()) {
-<a class="jxr_linenumber" name="50" href="#50">50</a>  				pathInfo = pathInfo.substring(1);
-<a class="jxr_linenumber" name="51" href="#51">51</a>  				arguments = pathInfo.split(<span class="jxr_string">"/"</span>);
-<a class="jxr_linenumber" name="52" href="#52">52</a>  			}
-<a class="jxr_linenumber" name="53" href="#53">53</a>  		} <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (req.getMethod().equalsIgnoreCase(<span class="jxr_string">"POST"</span>)) {
-<a class="jxr_linenumber" name="54" href="#54">54</a>  			Map&lt;String, String[]&gt; param = req.getParameterMap();
-<a class="jxr_linenumber" name="55" href="#55">55</a>  			System.out.println(param);
-<a class="jxr_linenumber" name="56" href="#56">56</a>  			<strong class="jxr_keyword">int</strong> i = 0;
-<a class="jxr_linenumber" name="57" href="#57">57</a>  			arguments = <strong class="jxr_keyword">new</strong> Object[param.size()];
-<a class="jxr_linenumber" name="58" href="#58">58</a>  			<strong class="jxr_keyword">for</strong> (String[] array : param.values()) {
-<a class="jxr_linenumber" name="59" href="#59">59</a>  				arguments[i++] = array[0];
-<a class="jxr_linenumber" name="60" href="#60">60</a>  			}
-<a class="jxr_linenumber" name="61" href="#61">61</a>  		}
+<a class="jxr_linenumber" name="25" href="#25">25</a>  <strong class="jxr_keyword">import</strong> java.util.Map;
+<a class="jxr_linenumber" name="26" href="#26">26</a>  
+<a class="jxr_linenumber" name="27" href="#27">27</a>  <strong class="jxr_keyword">import</strong> javax.servlet.ServletOutputStream;
+<a class="jxr_linenumber" name="28" href="#28">28</a>  <strong class="jxr_keyword">import</strong> javax.servlet.http.HttpServletRequest;
+<a class="jxr_linenumber" name="29" href="#29">29</a>  <strong class="jxr_keyword">import</strong> javax.servlet.http.HttpServletResponse;
+<a class="jxr_linenumber" name="30" href="#30">30</a>  
+<a class="jxr_linenumber" name="31" href="#31">31</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../org/prolobjectlink/web/application/GrizzlyControllerRuntime.html">GrizzlyControllerRuntime</a> {
+<a class="jxr_linenumber" name="32" href="#32">32</a>  
+<a class="jxr_linenumber" name="33" href="#33">33</a>  	<strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">void</strong> run(HttpServletRequest req, HttpServletResponse resp) <strong class="jxr_keyword">throws</strong> IOException {
+<a class="jxr_linenumber" name="34" href="#34">34</a>  
+<a class="jxr_linenumber" name="35" href="#35">35</a>  		String protocol = req.getScheme();
+<a class="jxr_linenumber" name="36" href="#36">36</a>  		String contextHost = req.getHeader(<span class="jxr_string">"host"</span>);
+<a class="jxr_linenumber" name="37" href="#37">37</a>  		Integer contextPort = req.getLocalPort();
+<a class="jxr_linenumber" name="38" href="#38">38</a>  		String contextPath = req.getContextPath();
+<a class="jxr_linenumber" name="39" href="#39">39</a>  		String application = contextPath.substring(1);
+<a class="jxr_linenumber" name="40" href="#40">40</a>  		String servletPath = req.getServletPath();
+<a class="jxr_linenumber" name="41" href="#41">41</a>  		String procedure = servletPath.substring(1);
+<a class="jxr_linenumber" name="42" href="#42">42</a>  
+<a class="jxr_linenumber" name="43" href="#43">43</a>  		Object[] arguments = <strong class="jxr_keyword">new</strong> Object[0];
+<a class="jxr_linenumber" name="44" href="#44">44</a>  		<strong class="jxr_keyword">if</strong> (req.getMethod().equalsIgnoreCase(<span class="jxr_string">"GET"</span>)) {
+<a class="jxr_linenumber" name="45" href="#45">45</a>  			String pathInfo = req.getPathInfo();
+<a class="jxr_linenumber" name="46" href="#46">46</a>  			<strong class="jxr_keyword">if</strong> (pathInfo != <strong class="jxr_keyword">null</strong> &amp;&amp; !pathInfo.isEmpty()) {
+<a class="jxr_linenumber" name="47" href="#47">47</a>  				pathInfo = pathInfo.substring(1);
+<a class="jxr_linenumber" name="48" href="#48">48</a>  				arguments = pathInfo.split(<span class="jxr_string">"/"</span>);
+<a class="jxr_linenumber" name="49" href="#49">49</a>  			}
+<a class="jxr_linenumber" name="50" href="#50">50</a>  		} <strong class="jxr_keyword">else</strong> <strong class="jxr_keyword">if</strong> (req.getMethod().equalsIgnoreCase(<span class="jxr_string">"POST"</span>)) {
+<a class="jxr_linenumber" name="51" href="#51">51</a>  			Map&lt;String, String[]&gt; param = req.getParameterMap();
+<a class="jxr_linenumber" name="52" href="#52">52</a>  			<strong class="jxr_keyword">int</strong> i = 0;
+<a class="jxr_linenumber" name="53" href="#53">53</a>  			arguments = <strong class="jxr_keyword">new</strong> Object[param.size()];
+<a class="jxr_linenumber" name="54" href="#54">54</a>  			<strong class="jxr_keyword">for</strong> (String[] array : param.values()) {
+<a class="jxr_linenumber" name="55" href="#55">55</a>  				arguments[i++] = array[0];
+<a class="jxr_linenumber" name="56" href="#56">56</a>  			}
+<a class="jxr_linenumber" name="57" href="#57">57</a>  		}
+<a class="jxr_linenumber" name="58" href="#58">58</a>  
+<a class="jxr_linenumber" name="59" href="#59">59</a>  		ServletOutputStream out = resp.getOutputStream();
+<a class="jxr_linenumber" name="60" href="#60">60</a>  		ControllerRuntime.run(protocol, contextHost, contextPort, application, procedure, arguments, out);
+<a class="jxr_linenumber" name="61" href="#61">61</a>  		resp.setStatus(HttpServletResponse.SC_OK);
 <a class="jxr_linenumber" name="62" href="#62">62</a>  
-<a class="jxr_linenumber" name="63" href="#63">63</a>  		System.out.println(Arrays.toString(arguments));
+<a class="jxr_linenumber" name="63" href="#63">63</a>  	}
 <a class="jxr_linenumber" name="64" href="#64">64</a>  
-<a class="jxr_linenumber" name="65" href="#65">65</a>  		ServletOutputStream out = resp.getOutputStream();
-<a class="jxr_linenumber" name="66" href="#66">66</a>  		ControllerRuntime.run(protocol, contextHost, contextPort, application, procedure, arguments, out);
-<a class="jxr_linenumber" name="67" href="#67">67</a>  		resp.setStatus(HttpServletResponse.SC_OK);
-<a class="jxr_linenumber" name="68" href="#68">68</a>  
-<a class="jxr_linenumber" name="69" href="#69">69</a>  	}
-<a class="jxr_linenumber" name="70" href="#70">70</a>  
-<a class="jxr_linenumber" name="71" href="#71">71</a>  	<strong class="jxr_keyword">private</strong> <a href="../../../../org/prolobjectlink/web/application/GrizzlyControllerRuntime.html">GrizzlyControllerRuntime</a>() {
-<a class="jxr_linenumber" name="72" href="#72">72</a>  	}
-<a class="jxr_linenumber" name="73" href="#73">73</a>  
-<a class="jxr_linenumber" name="74" href="#74">74</a>  }
+<a class="jxr_linenumber" name="65" href="#65">65</a>  	<strong class="jxr_keyword">private</strong> <a href="../../../../org/prolobjectlink/web/application/GrizzlyControllerRuntime.html">GrizzlyControllerRuntime</a>() {
+<a class="jxr_linenumber" name="66" href="#66">66</a>  	}
+<a class="jxr_linenumber" name="67" href="#67">67</a>  
+<a class="jxr_linenumber" name="68" href="#68">68</a>  }
 </pre>
 <hr/><div id="footer">This page was automatically generated by <a href="http://maven.apache.org/">Maven</a></div></body>
 </html>

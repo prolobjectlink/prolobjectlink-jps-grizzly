@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.2.5" timestamp="2019-09-27T18:14:04.487">
+<pmd version="4.2.5" timestamp="2019-10-29T22:50:23.914">
 <file name="D:\Programacion\eclipse-java-photon-workspace\prolobjectlink-jps-grizzly\src\main\java\org\prolobjectlink\web\platform\AbstractGrizzlyServer.java">
-<violation beginline="104" endline="106" begincolumn="27" endcolumn="25" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.prolobjectlink.web.platform" class="AbstractGrizzlyServer" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
+<violation beginline="197" endline="199" begincolumn="27" endcolumn="25" rule="EmptyCatchBlock" ruleset="Basic Rules" package="org.prolobjectlink.web.platform" class="AbstractGrizzlyServer" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyCatchBlock" priority="3">
 Avoid empty catch blocks
 </violation>
 </file>

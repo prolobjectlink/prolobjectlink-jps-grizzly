@@ -39,7 +39,9 @@ import org.glassfish.grizzly.servlet.WebappContext;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.prolobjectlink.db.DatabaseDriver;
 import org.prolobjectlink.db.DatabaseDriverFactory;
+import org.prolobjectlink.db.DatabaseServer;
 import org.prolobjectlink.db.jpa.spi.JPAPersistenceUnitInfo;
+import org.prolobjectlink.db.server.HSQLServer;
 import org.prolobjectlink.db.util.JavaReflect;
 import org.prolobjectlink.logging.LoggerConstants;
 import org.prolobjectlink.logging.LoggerUtils;
@@ -52,12 +54,20 @@ import org.prolobjectlink.web.servlet.admin.ApplicationServlet;
 import org.prolobjectlink.web.servlet.admin.ConfigurationServlet;
 import org.prolobjectlink.web.servlet.admin.ConnectorsServlet;
 import org.prolobjectlink.web.servlet.admin.DatabaseServlet;
+import org.prolobjectlink.web.servlet.admin.DeleteApplicationServlet;
+import org.prolobjectlink.web.servlet.admin.DeleteDatabaseServlet;
 import org.prolobjectlink.web.servlet.admin.DocumentsServlet;
+import org.prolobjectlink.web.servlet.admin.ExportApplicationServlet;
+import org.prolobjectlink.web.servlet.admin.ExportDatabaseServlet;
+import org.prolobjectlink.web.servlet.admin.LogoutServlet;
 import org.prolobjectlink.web.servlet.admin.LogsServlet;
 import org.prolobjectlink.web.servlet.admin.ManagerServlet;
 import org.prolobjectlink.web.servlet.admin.ModelServlet;
 import org.prolobjectlink.web.servlet.admin.PersistenceServlet;
 import org.prolobjectlink.web.servlet.admin.ProviderServlet;
+import org.prolobjectlink.web.servlet.admin.RestartServlet;
+import org.prolobjectlink.web.servlet.admin.UploadApplicationServlet;
+import org.prolobjectlink.web.servlet.admin.UploadDatabaseServlet;
 import org.prolobjectlink.web.servlet.admin.WelcomeServlet;
 import org.prolobjectlink.web.servlet.misc.BootstrapCSSMinMapServlet;
 import org.prolobjectlink.web.servlet.misc.BootstrapCSSMinServlet;
@@ -87,10 +97,14 @@ import org.prolobjectlink.web.servlet.misc.ProlobjectlinkJSServlet;
 public abstract class AbstractGrizzlyServer extends AbstractWebServer implements GrizzlyWebServer {
 
 	private HttpServer server;
+	private DatabaseServer databaseServer = new HSQLServer();
 
 	public AbstractGrizzlyServer(int serverPort) {
 		super(serverPort);
 		try {
+
+			databaseServer.startup();
+
 			InetAddress localHost = InetAddress.getLocalHost();
 			String localHostAddr = localHost.getHostAddress();
 			NetworkListener localHostListener = new NetworkListener("localhost", localHostAddr, serverPort);
@@ -102,6 +116,8 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 			server = GrizzlyHttpServerFactory.createHttpServer(baseUri);
 			server.addListener(localHostListener);
 			server.addListener(loopbackListener);
+
+			//
 			WelcomeServlet home = new WelcomeServlet();
 			context.addServlet(home.getClass().getName(), home).addMapping("/welcome");
 			ApplicationServlet app = new ApplicationServlet();
@@ -124,6 +140,26 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 			context.addServlet(man.getClass().getName(), man).addMapping("/pas/manager");
 			DocumentsServlet doc = new DocumentsServlet();
 			context.addServlet(doc.getClass().getName(), doc).addMapping("/doc");
+
+			// operations on manager
+			DeleteApplicationServlet delapp = new DeleteApplicationServlet();
+			context.addServlet(delapp.getClass().getName(), delapp).addMapping("/pas/application/delete/*");
+			DeleteDatabaseServlet deldb = new DeleteDatabaseServlet();
+			context.addServlet(deldb.getClass().getName(), deldb).addMapping("/pas/database/delete/*");
+			ExportApplicationServlet exapp = new ExportApplicationServlet();
+			context.addServlet(exapp.getClass().getName(), exapp).addMapping("/pas/application/export/*");
+			ExportDatabaseServlet exdb = new ExportDatabaseServlet();
+			context.addServlet(exdb.getClass().getName(), exdb).addMapping("/pas/database/export/*");
+			UploadApplicationServlet uploadapp = new UploadApplicationServlet();
+			context.addServlet(uploadapp.getClass().getName(), uploadapp).addMapping("/pas/uploadapp/*");
+			UploadDatabaseServlet uploaddb = new UploadDatabaseServlet();
+			context.addServlet(uploaddb.getClass().getName(), uploaddb).addMapping("/pas/uploaddb/*");
+
+			//
+			RestartServlet restart = new RestartServlet();
+			context.addServlet(restart.getClass().getName(), restart).addMapping("/pas/restart");
+			LogoutServlet logout = new LogoutServlet();
+			context.addServlet(logout.getClass().getName(), logout).addMapping("/pas/logout");
 
 			// jquery.js
 			JQueryServlet jquery = new JQueryServlet();
@@ -233,6 +269,10 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 			LoggerUtils.error(getClass(), LoggerConstants.UNKNOWN_HOST, e);
 		} catch (ServletException e) {
 			LoggerUtils.error(getClass(), LoggerConstants.SERVLET_ERROR, e);
+		} catch (ClassNotFoundException e) {
+			LoggerUtils.error(getClass(), LoggerConstants.CLASS_NOT_FOUND, e);
+		} catch (IOException e) {
+			LoggerUtils.error(getClass(), LoggerConstants.IO, e);
 		}
 
 	}

@@ -1,6 +1,6 @@
-org.prolobjectlink.web.application
-org.prolobjectlink.web.platform
-org.prolobjectlink.web.platform.linux.grizzly
-org.prolobjectlink.web.platform.macosx.grizzly
-org.prolobjectlink.web.platform.win32.grizzly
-org.prolobjectlink.web.servlet.admin
+io.github.prolobjectlink.web.application
+io.github.prolobjectlink.web.faces.http
+io.github.prolobjectlink.web.platform
+io.github.prolobjectlink.web.platform.linux.grizzly
+io.github.prolobjectlink.web.platform.macosx.grizzly
+io.github.prolobjectlink.web.platform.win32.grizzly

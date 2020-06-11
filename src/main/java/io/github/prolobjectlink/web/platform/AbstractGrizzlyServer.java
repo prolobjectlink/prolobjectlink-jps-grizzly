@@ -22,7 +22,6 @@
 package io.github.prolobjectlink.web.platform;
 
 import java.io.IOException;
-import java.net.BindException;
 import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
@@ -42,7 +41,7 @@ import io.github.prolobjectlink.db.DatabaseDriver;
 import io.github.prolobjectlink.db.DatabaseDriverFactory;
 import io.github.prolobjectlink.db.DatabaseServer;
 import io.github.prolobjectlink.db.jpa.spi.JPAPersistenceUnitInfo;
-import io.github.prolobjectlink.db.server.HSQLServer;
+import io.github.prolobjectlink.db.server.H2Server;
 import io.github.prolobjectlink.db.util.JavaReflect;
 import io.github.prolobjectlink.logging.LoggerConstants;
 import io.github.prolobjectlink.logging.LoggerUtils;
@@ -50,8 +49,10 @@ import io.github.prolobjectlink.web.application.ControllerGenerator;
 import io.github.prolobjectlink.web.application.GrizzlyControllerGenerator;
 import io.github.prolobjectlink.web.application.GrizzlyMiscellaneousLoader;
 import io.github.prolobjectlink.web.application.GrizzlyModelGenerator;
+import io.github.prolobjectlink.web.application.GrizzlyReportGenerator;
 import io.github.prolobjectlink.web.application.GrizzlyResourceLoader;
 import io.github.prolobjectlink.web.application.ModelGenerator;
+import io.github.prolobjectlink.web.application.ReportGenerator;
 import io.github.prolobjectlink.web.application.ResourceLoader;
 import io.github.prolobjectlink.web.application.ServletUrlMapping;
 import io.github.prolobjectlink.web.servlet.admin.AboutServlet;
@@ -65,6 +66,7 @@ import io.github.prolobjectlink.web.servlet.admin.DocumentsServlet;
 import io.github.prolobjectlink.web.servlet.admin.ExportApplicationServlet;
 import io.github.prolobjectlink.web.servlet.admin.ExportDatabaseServlet;
 import io.github.prolobjectlink.web.servlet.admin.InformationServlet;
+import io.github.prolobjectlink.web.servlet.admin.LibrariesServlet;
 import io.github.prolobjectlink.web.servlet.admin.LogoutServlet;
 import io.github.prolobjectlink.web.servlet.admin.LogsServlet;
 import io.github.prolobjectlink.web.servlet.admin.ManagerServlet;
@@ -77,6 +79,7 @@ import io.github.prolobjectlink.web.servlet.admin.RestartServlet;
 import io.github.prolobjectlink.web.servlet.admin.RootServlet;
 import io.github.prolobjectlink.web.servlet.admin.UploadApplicationServlet;
 import io.github.prolobjectlink.web.servlet.admin.UploadDatabaseServlet;
+import io.github.prolobjectlink.web.servlet.admin.UploadLibraryServlet;
 import io.github.prolobjectlink.web.servlet.admin.UserServlet;
 import io.github.prolobjectlink.web.servlet.admin.WelcomeServlet;
 
@@ -88,13 +91,16 @@ import io.github.prolobjectlink.web.servlet.admin.WelcomeServlet;
 public abstract class AbstractGrizzlyServer extends AbstractWebServer implements GrizzlyWebServer {
 
 	private HttpServer httpserver;
-	private DatabaseServer databaseServer = new HSQLServer();
+	private DatabaseServer databaseServer = new H2Server();
 
 	public AbstractGrizzlyServer(int serverPort) {
 		super(serverPort);
 		try {
 
-			databaseServer.startup();
+			// we use embedded database
+			// for performance rason
+
+			// databaseServer.startup();
 
 			InetAddress localHost = InetAddress.getLocalHost();
 			String localHostAddr = localHost.getHostAddress();
@@ -107,7 +113,7 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 			httpserver = GrizzlyHttpServerFactory.createHttpServer(baseUri);
 			httpserver.addListener(localHostListener);
 			httpserver.addListener(loopbackListener);
-			
+
 			// Web context initialization
 			GrizzlyWebContext context = new GrizzlyWebContext();
 
@@ -144,6 +150,8 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 			context.addServlet(about.getClass().getName(), about).addMapping("/pas/about");
 			UserServlet users = new UserServlet();
 			context.addServlet(users.getClass().getName(), users).addMapping("/pas/users");
+			LibrariesServlet libraries = new LibrariesServlet();
+			context.addServlet(libraries.getClass().getName(), libraries).addMapping("/pas/libraries");
 
 			// operations on manager
 			DeleteApplicationServlet delapp = new DeleteApplicationServlet();
@@ -158,6 +166,8 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 			context.addServlet(uploadapp.getClass().getName(), uploadapp).addMapping("/pas/uploadapp/*");
 			UploadDatabaseServlet uploaddb = new UploadDatabaseServlet();
 			context.addServlet(uploaddb.getClass().getName(), uploaddb).addMapping("/pas/uploaddb/*");
+			UploadLibraryServlet uploadlib = new UploadLibraryServlet();
+			context.addServlet(uploadlib.getClass().getName(), uploadlib).addMapping("/pas/uploadlib/*");
 			InformationServlet showdb = new InformationServlet();
 			context.addServlet(showdb.getClass().getName(), showdb).addMapping("/pas/database/show/*");
 			LogoutServlet logout = new LogoutServlet();
@@ -212,9 +222,18 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 
 			// applications controllers
 			ControllerGenerator controllerGenerator = new GrizzlyControllerGenerator();
-			List<ServletUrlMapping> mappings = controllerGenerator.getMappings();
-			for (ServletUrlMapping servletUrlMapping : mappings) {
+			List<ServletUrlMapping> controllerpaths = controllerGenerator.getMappings();
+			for (ServletUrlMapping servletUrlMapping : controllerpaths) {
 				Servlet servlet = context.createServlet(servletUrlMapping.getServlet().getClass());
+				context.addServlet(servletUrlMapping.getServlet().getClass().getName(), servlet)
+						.addMapping(servletUrlMapping.getMappingUrl());
+			}
+
+			// applications reports
+			ReportGenerator reportGenerator = new GrizzlyReportGenerator();
+			List<ServletUrlMapping> reportpaths = reportGenerator.getMappings();
+			for (ServletUrlMapping servletUrlMapping : reportpaths) {
+				Servlet servlet = servletUrlMapping.getServlet();
 				context.addServlet(servletUrlMapping.getServlet().getClass().getName(), servlet)
 						.addMapping(servletUrlMapping.getMappingUrl());
 			}
@@ -230,14 +249,6 @@ public abstract class AbstractGrizzlyServer extends AbstractWebServer implements
 			LoggerUtils.error(getClass(), LoggerConstants.UNKNOWN_HOST, e);
 		} catch (ServletException e) {
 			LoggerUtils.error(getClass(), LoggerConstants.SERVLET_ERROR, e);
-		} catch (ClassNotFoundException e) {
-			LoggerUtils.error(getClass(), LoggerConstants.CLASS_NOT_FOUND, e);
-		} catch (IOException e) {
-			LoggerUtils.error(getClass(), LoggerConstants.IO, e);
-		} catch (Exception e) {
-			if (!(e instanceof BindException)) {
-				LoggerUtils.error(getClass(), LoggerConstants.RUNTIME_ERROR, e);
-			}
 		}
 
 	}
